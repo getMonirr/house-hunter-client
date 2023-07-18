@@ -7,7 +7,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
-const BookingModal = ({ isOpen, closeModal, house }) => {
+const BookingModal = ({ isOpen, closeModal, house, renterBookingRefetch }) => {
   const [isBookLoading, setIsBookLoading] = useState(false);
 
   const { user } = useAuth();
@@ -43,6 +43,7 @@ const BookingModal = ({ isOpen, closeModal, house }) => {
               "success"
             );
             closeModal();
+            renterBookingRefetch();
             setIsBookLoading(false);
           }
           console.log(res);

@@ -12,20 +12,24 @@ const Home = () => {
   const { user } = useAuth();
   const itemsPerPage = 4;
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // pagination
   const { data: houses, isLoading } = useQuery({
-    queryKey: ["allHouse", user?.email, currentPage, itemsPerPage],
+    queryKey: ["allHouse", user?.email, currentPage, itemsPerPage, searchQuery],
     queryFn: () =>
       axios
         .get(`${import.meta.env.VITE_API_URL}/houses`, {
           params: {
             limit: itemsPerPage,
             skip: (currentPage - 1) * itemsPerPage,
+            search: searchQuery,
           },
         })
         .then((res) => res?.data),
   });
 
+  // get all house data
   const { data: allHouses } = useQuery({
     queryKey: ["allHousesData"],
     queryFn: async () =>
@@ -39,9 +43,30 @@ const Home = () => {
     setCurrentPage(newPage);
   };
 
+  // get renter booking number
+  const { data: isRenterBookingFull, refetch: renterBookingRefetch } = useQuery(
+    {
+      queryKey: ["renterBookingNumber", user?.email],
+      queryFn: () =>
+        axios
+          .get(
+            `${import.meta.env.VITE_API_URL}/bookings/renter-number/${
+              user?.email
+            }`
+          )
+          .then((res) => res?.data),
+    }
+  );
+
+  // search for bookings
+
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+  };
+
   return (
     <div>
-      <SearchBanner />
+      <SearchBanner handleSearch={handleSearch} />
       <HouseContainer>
         <SectionHeading>Explore your house</SectionHeading>
         <Typography marginBottom="8px">Filter Option</Typography>
@@ -82,7 +107,12 @@ const Home = () => {
             houses &&
             Array.isArray(houses) &&
             houses.map((house) => (
-              <SingleHouseCard key={house._id} house={house} />
+              <SingleHouseCard
+                isRenterBookingFull={isRenterBookingFull}
+                renterBookingRefetch={renterBookingRefetch}
+                key={house._id}
+                house={house}
+              />
             ))
           )}
         </div>
@@ -92,6 +122,7 @@ const Home = () => {
             <Pagination
               count={Math.ceil(allHouses.length / itemsPerPage)}
               onChange={handlePageChange}
+              color="primary"
             />
           )}
         </div>

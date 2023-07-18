@@ -12,16 +12,17 @@ import { useNavigate } from "react-router-dom";
 import BookingModal from "../BookingModal/BookingModal";
 import { useState } from "react";
 
-const SingleHouseCard = ({ house }) => {
+const SingleHouseCard = ({ house, isRenterBookingFull,renterBookingRefetch }) => {
+  console.log(isRenterBookingFull);
   let [isOpen, setIsOpen] = useState(false);
 
-  function closeModal() {
+  const closeModal = () => {
     setIsOpen(false);
-  }
+  };
 
-  function openModal() {
+  const openModal = () => {
     setIsOpen(true);
-  }
+  };
 
   const { image, description, name } = house;
   const { user } = useAuth();
@@ -83,13 +84,19 @@ const SingleHouseCard = ({ house }) => {
           </div>
         </CardContent>
         <CardActions sx={{ justifyContent: "end" }}>
-          <Button onClick={handleBooking} variant="contained">
+          <Button
+            disabled={
+              isRenterBookingFull?.bookingCount >= 2 || user?.role === "owner"
+            }
+            onClick={handleBooking}
+            variant="contained"
+          >
             Book
           </Button>
         </CardActions>
       </Card>
 
-      <BookingModal isOpen={isOpen} closeModal={closeModal} house={house} />
+      <BookingModal renterBookingRefetch={renterBookingRefetch} isOpen={isOpen} closeModal={closeModal} house={house} />
     </>
   );
 };
