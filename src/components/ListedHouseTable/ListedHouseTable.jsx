@@ -15,7 +15,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import HouseEditModal from "../houseEditModal/HouseEditModal";
 import { useState } from "react";
 
-const ListedHouseTable = ({ listedHouses, handleDelete,refetch }) => {
+const ListedHouseTable = ({ listedHouses, handleDelete, refetch }) => {
   let [isOpen, setIsOpen] = useState(false);
   const [selectedHouse, setSelectedHouse] = useState(null);
 
@@ -83,7 +83,7 @@ const ListedHouseTable = ({ listedHouses, handleDelete,refetch }) => {
                   </TableCell>
 
                   <TableCell align="right">
-                    {house?.isBooking ? house?.isBooking : "Not Booking"}
+                    {house?.isBooking ? "Booked" : "Not Booking"}
                   </TableCell>
                   <TableCell align="right">
                     <Button

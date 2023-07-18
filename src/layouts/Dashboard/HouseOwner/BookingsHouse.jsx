@@ -13,13 +13,15 @@ const BookingsHouse = () => {
   const { data: bookingHouses } = useQuery({
     queryKey: ["listedHouses", user?.email],
     queryFn: () =>
-      secureAxios.get(`/bookings?${user?.email}`).then((res) => res.data),
+      secureAxios.get(`/bookings/${user?.email}`).then((res) => res.data),
   });
+
+
 
   return (
     <div>
       <SectionHeading>All Booking Houses</SectionHeading>
-      <BookingTable bookingHouse={bookingHouses} />
+      <BookingTable bookingHouses={bookingHouses} />
     </div>
   );
 };

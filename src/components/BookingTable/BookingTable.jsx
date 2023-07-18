@@ -13,7 +13,7 @@ import ShowerIcon from "@mui/icons-material/Shower";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
-const BookingTable = ({  bookingHouses }) => {
+const BookingTable = ({ bookingHouses }) => {
   return (
     <>
       <TableContainer component={Paper}>
@@ -26,7 +26,6 @@ const BookingTable = ({  bookingHouses }) => {
               <TableCell align="right">Bathrooms</TableCell>
               <TableCell align="right">Rent Per Month</TableCell>
               <TableCell align="right">Available Date</TableCell>
-              <TableCell align="right">Status</TableCell>
               <TableCell align="right">Action</TableCell>
               <TableCell align="center">Action</TableCell>
             </TableRow>
@@ -62,10 +61,6 @@ const BookingTable = ({  bookingHouses }) => {
                   <TableCell align="right">
                     <CalendarMonthIcon />
                     <span className="ml-2">{house.date}</span>
-                  </TableCell>
-
-                  <TableCell align="right">
-                    {house?.isBooking ? house?.isBooking : "Not Booking"}
                   </TableCell>
                   <TableCell align="right">
                     <Button

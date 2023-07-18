@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import SectionHeading from "../../../components/shared/SectionHeading";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
@@ -10,8 +10,11 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useState } from "react";
 
 const AddNewHouse = () => {
+  const [isAddLoading, setIsAddLoading] = useState(false);
+
   const { user } = useAuth();
   const { secureAxios } = useSecureAxios();
 
@@ -25,12 +28,14 @@ const AddNewHouse = () => {
       if (res?.data?.insertedId) {
         Swal.fire("House Added", "You can see the new house", "success");
         navigate("/dashboard/listed-house");
+        setIsAddLoading(false);
       }
     },
   });
 
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
+    setIsAddLoading(true);
     try {
       // get img url
       const imageFile = data.image[0];
@@ -54,9 +59,9 @@ const AddNewHouse = () => {
         text: "Something went wrong!",
       });
       console.log(err);
+      setIsAddLoading(false);
     }
   };
-  const isAddLoading = houseMutation.isLoading;
 
   return (
     <div>
@@ -164,20 +169,15 @@ const AddNewHouse = () => {
         />
 
         <div className="text-end">
-          {isAddLoading ? (
-            <LoadingButton loading variant="outlined">
-              Submit
-            </LoadingButton>
-          ) : (
-            <Button
-              variant="contained"
-              startIcon={<AddCircleOutlineIcon />}
-              endIcon={<SendIcon />}
-              type="submit"
-            >
-              Add House
-            </Button>
-          )}
+          <LoadingButton
+            loading={isAddLoading}
+            variant="contained"
+            startIcon={<AddCircleOutlineIcon />}
+            endIcon={<SendIcon />}
+            type="submit"
+          >
+            Add House
+          </LoadingButton>
         </div>
       </form>
     </div>

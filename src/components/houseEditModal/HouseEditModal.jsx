@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import SectionHeading from "../shared/SectionHeading";
 import { useForm } from "react-hook-form";
 import { Button, TextField } from "@mui/material";
@@ -11,6 +11,8 @@ import useAuth from "../../hooks/useAuth";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+
   const { user } = useAuth();
 
   const { register, handleSubmit } = useForm();
@@ -42,12 +44,15 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
         Swal.fire("House Added", "You can see the new house", "success");
         closeModal();
         refetch();
+        setIsUpdateLoading(false);
         queryClient.invalidateQueries(["listedHouse", user?.email]);
       }
+      setIsUpdateLoading(false);
     },
   });
 
   const onSubmit = async (data) => {
+    setIsUpdateLoading(true);
     try {
       // get img url
       const imageFile = data.image[0];
@@ -65,15 +70,23 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
       console.log(newHouse);
       await houseMutation.mutateAsync(newHouse);
     } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-      });
-      console.log(err);
+      if (err?.response?.data?.error?.code === 120) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "this error cause for image, please upload a new image",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+      }
+
+      setIsUpdateLoading(false);
     }
   };
-  const isAddLoading = houseMutation.isLoading;
 
   return (
     <>
@@ -115,7 +128,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="Name"
                           variant="outlined"
                           type="text"
-                          required
                           fullWidth
                           defaultValue={name}
                         />
@@ -126,7 +138,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="Address"
                           variant="outlined"
                           type="text"
-                          required
                           fullWidth
                           defaultValue={address}
                         />
@@ -135,7 +146,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="City"
                           variant="outlined"
                           type="text"
-                          required
                           fullWidth
                           defaultValue={city}
                         />
@@ -146,7 +156,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="Bathrooms"
                           variant="outlined"
                           type="number"
-                          required
                           fullWidth
                           defaultValue={bathrooms}
                         />
@@ -155,7 +164,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="Bedrooms"
                           variant="outlined"
                           type="number"
-                          required
                           fullWidth
                           defaultValue={bedrooms}
                         />
@@ -164,7 +172,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="Room size"
                           variant="outlined"
                           type="number"
-                          required
                           fullWidth
                           defaultValue={room_size}
                         />
@@ -178,7 +185,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="Rent per month"
                           variant="outlined"
                           type="number"
-                          required
                           fullWidth
                           defaultValue={rent_per_month}
                         />
@@ -187,7 +193,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           label="Phone Number"
                           variant="outlined"
                           type="text"
-                          required
                           fullWidth
                           defaultValue={phone_number}
                         />
@@ -195,7 +200,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           {...register("date")}
                           variant="outlined"
                           type="date"
-                          required
                           fullWidth
                           defaultValue={date}
                         />
@@ -203,7 +207,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                           {...register("image")}
                           variant="outlined"
                           type="file"
-                          required
                           fullWidth
                         />
                       </div>
@@ -214,7 +217,6 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                         type="text"
                         multiline
                         rows={4}
-                        required
                         fullWidth
                         defaultValue={description}
                       />
@@ -228,19 +230,15 @@ const HouseEditModal = ({ isOpen, closeModal, house, refetch }) => {
                         >
                           Cancel
                         </Button>
-                        {isAddLoading ? (
-                          <LoadingButton loading variant="outlined">
-                            Submit
-                          </LoadingButton>
-                        ) : (
-                          <Button
-                            variant="contained"
-                            type="submit"
-                            color="success"
-                          >
-                            Add House
-                          </Button>
-                        )}
+
+                        <LoadingButton
+                          loading={isUpdateLoading}
+                          variant="contained"
+                          type="submit"
+                          color="success"
+                        >
+                          Update House
+                        </LoadingButton>
                       </div>
                     </form>
                   </div>
