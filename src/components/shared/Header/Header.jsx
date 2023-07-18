@@ -38,6 +38,9 @@ const Header = () => {
         if (res?.data?.isLogout) {
           Swal.fire("LogOut successful", "See you soon", "success");
 
+          // remove token
+          localStorage.removeItem("hunter_token");
+
           // set user
           setUser(null);
         }

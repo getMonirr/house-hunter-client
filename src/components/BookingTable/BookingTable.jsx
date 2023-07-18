@@ -12,26 +12,8 @@ import BedIcon from "@mui/icons-material/Bed";
 import ShowerIcon from "@mui/icons-material/Shower";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import HouseEditModal from "../houseEditModal/HouseEditModal";
-import { useState } from "react";
 
-const ListedHouseTable = ({ listedHouses, handleDelete,refetch }) => {
-  let [isOpen, setIsOpen] = useState(false);
-  const [selectedHouse, setSelectedHouse] = useState(null);
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  const handleEdit = (house) => {
-    setSelectedHouse(house);
-    openModal();
-    console.log("edited");
-  };
+const BookingTable = ({  bookingHouses }) => {
   return (
     <>
       <TableContainer component={Paper}>
@@ -50,9 +32,9 @@ const ListedHouseTable = ({ listedHouses, handleDelete,refetch }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listedHouses &&
-              Array.isArray(listedHouses) &&
-              listedHouses.map((house, index) => (
+            {bookingHouses &&
+              Array.isArray(bookingHouses) &&
+              bookingHouses.map((house, index) => (
                 <TableRow
                   key={house._id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -87,7 +69,6 @@ const ListedHouseTable = ({ listedHouses, handleDelete,refetch }) => {
                   </TableCell>
                   <TableCell align="right">
                     <Button
-                      onClick={() => handleDelete(house._id)}
                       startIcon={<DeleteForeverIcon />}
                       color="error"
                       align="center"
@@ -97,7 +78,6 @@ const ListedHouseTable = ({ listedHouses, handleDelete,refetch }) => {
                   </TableCell>
                   <TableCell align="right">
                     <Button
-                      onClick={() => handleEdit(house)}
                       startIcon={<EditIcon />}
                       color="success"
                       align="center"
@@ -110,15 +90,8 @@ const ListedHouseTable = ({ listedHouses, handleDelete,refetch }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <HouseEditModal
-        isOpen={isOpen}
-        closeModal={closeModal}
-        house={selectedHouse}
-        refetch={refetch}
-      />
     </>
   );
 };
 
-export default ListedHouseTable;
+export default BookingTable;

@@ -44,6 +44,7 @@ const Login = () => {
 
           // save token in local storage
           localStorage.setItem("hunter_token", token);
+          localStorage.setItem("userEmail", newUser?.email);
 
           // set user
           setUser(newUser);

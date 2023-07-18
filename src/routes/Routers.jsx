@@ -7,6 +7,7 @@ import Dashboard from "../layouts/Dashboard/Dashboard";
 import ListedHouses from "../layouts/Dashboard/HouseOwner/ListedHouses";
 import BookingsHouse from "../layouts/Dashboard/HouseOwner/BookingsHouse";
 import AddNewHouse from "../layouts/Dashboard/AddNewHouse/AddNewHouse";
+import PrivateRoutes from "./PrivateRoutes";
 
 const Routers = createBrowserRouter([
   {
@@ -24,7 +25,11 @@ const Routers = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: <Dashboard />,
+    element: (
+      <PrivateRoutes>
+        <Dashboard />
+      </PrivateRoutes>
+    ),
     children: [
       {
         path: "listed-house",
@@ -37,7 +42,7 @@ const Routers = createBrowserRouter([
       {
         path: "add-new-house",
         element: <AddNewHouse />,
-      }
+      },
     ],
   },
 ]);

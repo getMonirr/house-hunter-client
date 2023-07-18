@@ -3,10 +3,60 @@ import SectionHeading from "../../../components/shared/SectionHeading";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import SendIcon from "@mui/icons-material/Send";
 import { useForm } from "react-hook-form";
+import { getImgUrl } from "../../../API/utilites";
+import useAuth from "../../../hooks/useAuth";
+import useSecureAxios from "../../../hooks/useSecureAxios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const AddNewHouse = () => {
+  const { user } = useAuth();
+  const { secureAxios } = useSecureAxios();
+
+  // navigate
+  const navigate = useNavigate();
+
+  const houseMutation = useMutation({
+    mutationFn: (newHouseData) =>
+      secureAxios.post("/houses", { ...newHouseData }),
+    onSuccess: (res) => {
+      if (res?.data?.insertedId) {
+        Swal.fire("House Added", "You can see the new house", "success");
+        navigate("/dashboard/listed-house");
+      }
+    },
+  });
+
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      // get img url
+      const imageFile = data.image[0];
+      const imgUrl = await getImgUrl(imageFile);
+
+      // prepare new house
+      // eslint-disable-next-line no-unused-vars
+      const { image, ...withoutImage } = data;
+      const newHouse = {
+        ...withoutImage,
+        ownerEmail: user?.email,
+        image: imgUrl,
+      };
+
+      console.log(newHouse);
+      await houseMutation.mutateAsync(newHouse);
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+      console.log(err);
+    }
+  };
+  const isAddLoading = houseMutation.isLoading;
 
   return (
     <div>
@@ -45,26 +95,26 @@ const AddNewHouse = () => {
         </div>
         <div className="flex gap-4">
           <TextField
-            {...register("bathrooms")}
+            {...register("bathrooms", { valueAsNumber: true })}
             label="Bathrooms"
             variant="outlined"
-            type="text"
+            type="number"
             required
             fullWidth
           />
           <TextField
-            {...register("bedrooms")}
+            {...register("bedrooms", { valueAsNumber: true })}
             label="Bedrooms"
             variant="outlined"
-            type="text"
+            type="number"
             required
             fullWidth
           />
           <TextField
-            {...register("room_size")}
+            {...register("room_size", { valueAsNumber: true })}
             label="Room size"
             variant="outlined"
-            type="text"
+            type="number"
             required
             fullWidth
           />
@@ -72,10 +122,10 @@ const AddNewHouse = () => {
 
         <div className="flex gap-4">
           <TextField
-            {...register("rent_per_month")}
+            {...register("rent_per_month", { valueAsNumber: true })}
             label="Rent per month"
             variant="outlined"
-            type="text"
+            type="number"
             required
             fullWidth
           />
@@ -94,6 +144,13 @@ const AddNewHouse = () => {
             required
             fullWidth
           />
+          <TextField
+            {...register("image")}
+            variant="outlined"
+            type="file"
+            required
+            fullWidth
+          />
         </div>
         <TextField
           {...register("description")}
@@ -107,14 +164,20 @@ const AddNewHouse = () => {
         />
 
         <div className="text-end">
-          <Button
-            variant="contained"
-            startIcon={<AddCircleOutlineIcon />}
-            endIcon={<SendIcon />}
-            type="submit"
-          >
-            Add House
-          </Button>
+          {isAddLoading ? (
+            <LoadingButton loading variant="outlined">
+              Submit
+            </LoadingButton>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<AddCircleOutlineIcon />}
+              endIcon={<SendIcon />}
+              type="submit"
+            >
+              Add House
+            </Button>
+          )}
         </div>
       </form>
     </div>
