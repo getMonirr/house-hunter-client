@@ -15,9 +15,11 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAuth from "../../../hooks/useAuth";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Header = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [anchorElNav, setAnchorElNav] = useState(null);
 
   const handleOpenNavMenu = (event) => {
@@ -26,6 +28,28 @@ const Header = () => {
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
+  };
+
+  // handle log out
+  const handleLogOut = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/users/logout/${user?.email}`)
+      .then((res) => {
+        if (res?.data?.isLogout) {
+          Swal.fire("LogOut successful", "See you soon", "success");
+
+          // set user
+          setUser(null);
+        }
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+        console.log(err);
+      });
   };
 
   return (
@@ -125,12 +149,20 @@ const Header = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             {user ? (
-              <IconButton sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
+              <>
+                <IconButton sx={{ p: 0 }}>
+                  <Avatar
+                    alt={user?.firstName}
+                    src="/static/images/avatar/2.jpg"
+                  />
+                </IconButton>
+                <Button onClick={handleLogOut} variant="contained">
+                  Sign Out
+                </Button>
+              </>
             ) : (
               <Link to="/login">
-                <Button variant="contained">Login</Button>
+                <Button variant="contained">Sign in</Button>
               </Link>
             )}
           </Box>

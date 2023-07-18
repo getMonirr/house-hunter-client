@@ -15,16 +15,54 @@ import { useState } from "react";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+  // use auth
+  const { setUser } = useAuth();
+
+  // navigate
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state?.from?.pathname || "/";
+
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/users/login`, { ...data })
+      .then((res) => {
+        if (res.data?.isLogin) {
+          const { newUser, token } = res.data;
+
+          // save token in local storage
+          localStorage.setItem("hunter_token", token);
+
+          // set user
+          setUser(newUser);
+
+          Swal.fire("Login successful", "Welcome back to hunter", "success");
+
+          // navigate user
+          navigate(from);
+        }
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+        console.log(err);
+      });
+  };
   return (
     <div className="flex">
       <div
@@ -37,7 +75,7 @@ const Login = () => {
         }}
       ></div>
       <div className="w-1/3 flex justify-center px-16 py-32">
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full"> 
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="flex flex-col items-center gap-3 mb-8">
             <Avatar sx={{ bgcolor: "skyblue" }}>
               <LockPersonIcon />
