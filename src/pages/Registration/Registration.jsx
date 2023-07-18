@@ -10,22 +10,66 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { useState } from "react";
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm } from "react-hook-form";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+  // navigate
+  const navigate = useNavigate();
+
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => console.log(data);
+  // registration handle
+  const onSubmit = (data) => {
+    console.log(data);
+
+    // register a user
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/users`, { ...data })
+      .then((res) => {
+        if (res?.data?.insertedId) {
+          // show success message
+          Swal.fire(
+            "Registration Successful",
+            "Please login your email and password",
+            "success"
+          );
+
+          // navigate user to login page
+          navigate("/login");
+        }
+        if (res?.data?.isExist) {
+          Swal.fire({
+            title: "User already registered",
+            text: "Please login with your email and password",
+            icon: "question",
+            confirmButtonText: "Goto login",
+          }).then(() => navigate("/login"));
+        }
+
+        console.log(res);
+      })
+      .catch((err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+        console.log(err);
+      });
+  };
   return (
     <div className="flex">
       <div
