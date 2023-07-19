@@ -89,7 +89,7 @@ const Registration = () => {
           backgroundPosition: "center, center",
         }}
       ></div>
-      <div className="w-full lg:w-1/3 flex justify-center px-16 py-32">
+      <div className="w-full md:w-1/2 mx-auto lg:w-1/3 flex justify-center px-3 xl:px-16 py-32">
         <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
           <div className="flex flex-col items-center gap-3 mb-8">
             <Avatar sx={{ bgcolor: "skyblue" }}>

@@ -76,7 +76,7 @@ const SingleHouseCard = ({
           <Typography variant="body2" color="text.secondary">
             {description}
           </Typography>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center ">
               <IconButton>
                 <BedIcon />
@@ -99,7 +99,7 @@ const SingleHouseCard = ({
               <IconButton>
                 <AttachMoneyIcon />
               </IconButton>
-              <Typography marginLeft="6px">{rent_per_month}</Typography>
+              <Typography>{rent_per_month}</Typography>
             </div>
           </div>
         </CardContent>

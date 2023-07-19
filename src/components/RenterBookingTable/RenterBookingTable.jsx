@@ -15,8 +15,20 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const RenterBookingTable = ({ renterBookings, handleDeleteBookings }) => {
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+      <TableContainer
+        sx={{
+          width: { xs: 250, sm: 600, md: 700, lg: 900 },
+          margin: "auto",
+        }}
+        component={Paper}
+      >
+        <Table
+          sx={{
+            height: "max-content",
+          }}
+          aria-label="simple table"
+          size="small"
+        >
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>

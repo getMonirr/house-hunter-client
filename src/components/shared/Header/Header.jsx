@@ -123,17 +123,8 @@ const Header = () => {
             variant="h5"
             noWrap
             component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
+            marginRight={1}
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
           >
             <Link to="/">House Hunter</Link>
           </Typography>
@@ -152,17 +143,19 @@ const Header = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             {user ? (
-              <>
-                <IconButton sx={{ p: 0 }}>
-                  <Avatar
-                    alt={user?.firstName}
-                    src="/static/images/avatar/2.jpg"
-                  />
-                </IconButton>
-                <Button onClick={handleLogOut} variant="contained">
+              <div className="flex items-center gap-4">
+                <div className="hidden lg:block">
+                  <IconButton sx={{ p: 0 }}>
+                    <Avatar
+                      alt={user?.firstName}
+                      src="/static/images/avatar/2.jpg"
+                    />
+                  </IconButton>
+                </div>
+                <Button onClick={handleLogOut} variant="contained" size="small">
                   Sign Out
                 </Button>
-              </>
+              </div>
             ) : (
               <Link to="/login">
                 <Button variant="contained">Sign in</Button>

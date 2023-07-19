@@ -34,8 +34,21 @@ const ListedHouseTable = ({ listedHouses, handleDelete, refetch }) => {
   };
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+      <TableContainer
+        component={Paper}
+        sx={{
+          width: { xs:250, sm: 600, md:700, lg:900},
+          margin: "auto"
+
+        }}
+      >
+        <Table
+          sx={{
+            height: "max-content",
+          }}
+          aria-label="simple table"
+          size="small"
+        >
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>

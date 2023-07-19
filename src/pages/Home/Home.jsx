@@ -111,7 +111,7 @@ const Home = () => {
       <HouseContainer>
         <SectionHeading>Explore your house</SectionHeading>
         <Typography marginBottom="8px">Filter Option</Typography>
-        <form className="flex gap-8">
+        <form className="flex gap-4 lg:gap-8 flex-wrap md:flex-nowrap">
           <TextField
             select
             label="Select"
@@ -191,6 +191,7 @@ const Home = () => {
             onChange={(e) => setSelectedDate(e.target.value)}
           />
 
+        </form>
           <Button
             onClick={handleFilterChange}
             variant="contained"
@@ -200,8 +201,7 @@ const Home = () => {
           >
             Apply Filters
           </Button>
-        </form>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 py-16">
           {isLoading ? (
             <>Loading...</>
           ) : (

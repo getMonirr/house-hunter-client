@@ -5,9 +5,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
 import BedIcon from "@mui/icons-material/Bed";
 import ShowerIcon from "@mui/icons-material/Shower";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -16,8 +13,20 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const BookingTable = ({ bookingHouses }) => {
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+      <TableContainer
+        component={Paper}
+        sx={{
+          width: { xs: 250, sm: 600, md: 700, lg: 900 },
+          margin: "auto",
+        }}
+      >
+        <Table
+          sx={{
+            height: "max-content",
+          }}
+          aria-label="simple table"
+          size="small"
+        >
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
@@ -26,8 +35,7 @@ const BookingTable = ({ bookingHouses }) => {
               <TableCell align="right">Bathrooms</TableCell>
               <TableCell align="right">Rent Per Month</TableCell>
               <TableCell align="right">Available Date</TableCell>
-              <TableCell align="right">Action</TableCell>
-              <TableCell align="center">Action</TableCell>
+              <TableCell align="right">Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -62,24 +70,7 @@ const BookingTable = ({ bookingHouses }) => {
                     <CalendarMonthIcon />
                     <span className="ml-2">{house.date}</span>
                   </TableCell>
-                  <TableCell align="right">
-                    <Button
-                      startIcon={<DeleteForeverIcon />}
-                      color="error"
-                      align="center"
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Button
-                      startIcon={<EditIcon />}
-                      color="success"
-                      align="center"
-                    >
-                      Edit
-                    </Button>
-                  </TableCell>
+                  <TableCell align="right">Booked</TableCell>
                 </TableRow>
               ))}
           </TableBody>

@@ -55,7 +55,7 @@ const ListedHouses = () => {
   return (
     <div>
       <SectionHeading>All Listed Houses</SectionHeading>
-      <div className="text-end mb-4">
+      <div className="text-center lg:text-end mb-4">
         <Link to="/dashboard/add-new-house">
           <Button variant="contained" startIcon={<AddCircleIcon />}>
             Add New House
