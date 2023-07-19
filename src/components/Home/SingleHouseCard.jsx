@@ -11,9 +11,15 @@ import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import BookingModal from "../BookingModal/BookingModal";
 import { useState } from "react";
+import HotTubIcon from "@mui/icons-material/HotTub";
+import HotelIcon from "@mui/icons-material/Hotel";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
-const SingleHouseCard = ({ house, isRenterBookingFull,renterBookingRefetch }) => {
-  console.log(isRenterBookingFull);
+const SingleHouseCard = ({
+  house,
+  isRenterBookingFull,
+  renterBookingRefetch,
+}) => {
   let [isOpen, setIsOpen] = useState(false);
 
   const closeModal = () => {
@@ -24,7 +30,15 @@ const SingleHouseCard = ({ house, isRenterBookingFull,renterBookingRefetch }) =>
     setIsOpen(true);
   };
 
-  const { image, description, name } = house;
+  const {
+    image,
+    description,
+    name,
+    bedrooms,
+    bathrooms,
+    room_size,
+    rent_per_month,
+  } = house;
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -67,19 +81,25 @@ const SingleHouseCard = ({ house, isRenterBookingFull,renterBookingRefetch }) =>
               <IconButton>
                 <BedIcon />
               </IconButton>
-              <Typography marginLeft="6px">two sit</Typography>
+              <Typography marginLeft="6px">{bedrooms}</Typography>
             </div>
             <div className="flex items-center ">
               <IconButton>
-                <BedIcon />
+                <HotTubIcon />
               </IconButton>
-              <Typography marginLeft="6px">two sit</Typography>
+              <Typography marginLeft="6px">{bathrooms}</Typography>
             </div>
             <div className="flex items-center ">
               <IconButton>
-                <BedIcon />
+                <HotelIcon />
               </IconButton>
-              <Typography marginLeft="6px">two sit</Typography>
+              <Typography marginLeft="6px">{room_size}</Typography>
+            </div>
+            <div className="flex items-center ">
+              <IconButton>
+                <AttachMoneyIcon />
+              </IconButton>
+              <Typography marginLeft="6px">{rent_per_month}</Typography>
             </div>
           </div>
         </CardContent>
@@ -96,7 +116,12 @@ const SingleHouseCard = ({ house, isRenterBookingFull,renterBookingRefetch }) =>
         </CardActions>
       </Card>
 
-      <BookingModal renterBookingRefetch={renterBookingRefetch} isOpen={isOpen} closeModal={closeModal} house={house} />
+      <BookingModal
+        renterBookingRefetch={renterBookingRefetch}
+        isOpen={isOpen}
+        closeModal={closeModal}
+        house={house}
+      />
     </>
   );
 };

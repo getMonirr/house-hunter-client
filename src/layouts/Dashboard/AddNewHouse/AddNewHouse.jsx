@@ -33,7 +33,11 @@ const AddNewHouse = () => {
     },
   });
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const onSubmit = async (data) => {
     setIsAddLoading(true);
     try {
@@ -135,13 +139,21 @@ const AddNewHouse = () => {
             fullWidth
           />
           <TextField
-            {...register("phone_number")}
+            {...register("phone_number", {
+              pattern: /^(?:\+?88)?01[135-9]\d{8}$/,
+            })}
             label="Phone Number"
             variant="outlined"
             type="text"
             required
             fullWidth
+            placeholder="+8801771909060"
           />
+          {errors.phone_number && (
+            <span className="text-xs text-red-400">
+              phoneNumber is not valid, only bd number
+            </span>
+          )}
           <TextField
             {...register("date")}
             variant="outlined"
@@ -149,14 +161,14 @@ const AddNewHouse = () => {
             required
             fullWidth
           />
-          <TextField
-            {...register("image")}
-            variant="outlined"
-            type="file"
-            required
-            fullWidth
-          />
         </div>
+        <TextField
+          {...register("image")}
+          variant="outlined"
+          type="file"
+          required
+          fullWidth
+        />
         <TextField
           {...register("description")}
           label="Description"

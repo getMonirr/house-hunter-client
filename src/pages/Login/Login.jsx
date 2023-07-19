@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Button,
   FormControl,
   IconButton,
   InputAdornment,
@@ -20,8 +19,11 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const Login = () => {
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -32,10 +34,11 @@ const Login = () => {
   // navigate
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location?.state?.from?.pathname || "/";
+  const from = location?.state?.from?.pathname || "/dashboard";
 
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
+    setIsLoginLoading(true);
     axios
       .post(`${import.meta.env.VITE_API_URL}/users/login`, { ...data })
       .then((res) => {
@@ -53,6 +56,7 @@ const Login = () => {
 
           // navigate user
           navigate(from);
+          setIsLoginLoading(false);
         }
       })
       .catch((err) => {
@@ -62,6 +66,7 @@ const Login = () => {
           text: "Something went wrong!",
         });
         console.log(err);
+        setIsLoginLoading(false);
       });
   };
   return (
@@ -123,9 +128,15 @@ const Login = () => {
             />
           </FormControl>
 
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 4 }}>
+          <LoadingButton
+            loading={isLoginLoading}
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 4 }}
+          >
             Sign in
-          </Button>
+          </LoadingButton>
 
           <div className="flex flex-col lg:flex-row justify-between mt-4">
             <Link to="" variant="body2" className="cursor-pointer">

@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Button,
   FormControl,
   IconButton,
   InputAdornment,
@@ -21,8 +20,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import Swal from "sweetalert2";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const Registration = () => {
+  const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -30,10 +31,15 @@ const Registration = () => {
   // navigate
   const navigate = useNavigate();
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm();
   // registration handle
   const onSubmit = (data) => {
-    console.log(data);
+    setIsRegistrationLoading(true);
 
     // register a user
     axios
@@ -43,12 +49,13 @@ const Registration = () => {
           // show success message
           Swal.fire(
             "Registration Successful",
-            "Please login your email and password",
+            "Please login and goto dashboard",
             "success"
           );
 
           // navigate user to login page
           navigate("/login");
+          setIsRegistrationLoading(false);
         }
         if (res?.data?.isExist) {
           Swal.fire({
@@ -59,7 +66,7 @@ const Registration = () => {
           }).then(() => navigate("/login"));
         }
 
-        console.log(res);
+        setIsRegistrationLoading(false);
       })
       .catch((err) => {
         Swal.fire({
@@ -68,6 +75,7 @@ const Registration = () => {
           text: "Something went wrong!",
         });
         console.log(err);
+        setIsRegistrationLoading(false);
       });
   };
   return (
@@ -131,13 +139,21 @@ const Registration = () => {
               <MenuItem value="renter">House Renter</MenuItem>
             </TextField>
             <TextField
-              {...register("phoneNumber")}
+              {...register("phoneNumber", {
+                pattern: /^(?:\+?88)?01[135-9]\d{8}$/,
+              })}
               label="Phone Number"
               variant="outlined"
               type="text"
               required
               fullWidth
+              placeholder="+8801771909060"
+              helperText="only BD numbers are allowed"
             />
+
+            {errors.phoneNumber && (
+              <span className="text-red-500">only bd number</span>
+            )}
           </div>
 
           <TextField
@@ -153,7 +169,10 @@ const Registration = () => {
               Password
             </InputLabel>
             <OutlinedInput
-              {...register("password")}
+              {...register("password", {
+                pattern:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+              })}
               id="outlined-adornment-password"
               type={showPassword ? "text" : "password"}
               endAdornment={
@@ -170,11 +189,66 @@ const Registration = () => {
               label="Password"
               required
             />
+            {
+              <>
+                <span
+                  className={`${errors.password ? "text-red-500" : ""} text-xs`}
+                >
+                  Minimum 6 characters, at least one uppercase & lowercase
+                  letter, one number and special character:
+                </span>
+                <div className="flex flex-col gap-1">
+                  {/^.*[a-z].*$/.test(watch("password")) ? (
+                    <span className="text-green-500 text-xs">
+                      One lower case latter
+                    </span>
+                  ) : (
+                    <span className="text-red-500 text-xs">
+                      One lower case latter
+                    </span>
+                  )}
+                  {/^.*[A-Z].*$/.test(watch("password")) ? (
+                    <span className="text-green-500 text-xs">
+                      One Upper case latter
+                    </span>
+                  ) : (
+                    <span className="text-red-500 text-xs">
+                      One Upper case latter
+                    </span>
+                  )}
+                  {/^.*[@$!%*?&].*$/.test(watch("password")) ? (
+                    <span className="text-green-500 text-xs">
+                      One Special Character
+                    </span>
+                  ) : (
+                    <span className="text-red-500 text-xs">
+                      One Special Character
+                    </span>
+                  )}
+                  {/^.*\d.*$/.test(watch("password")) ? (
+                    <span className="text-green-500 text-xs">One number</span>
+                  ) : (
+                    <span className="text-red-500 text-xs">One number</span>
+                  )}
+                  {watch("password")?.length >= 6 ? (
+                    <span className="text-green-500 text-xs">6 Char long</span>
+                  ) : (
+                    <span className="text-red-500 text-xs">6 Char long</span>
+                  )}
+                </div>
+              </>
+            }
           </FormControl>
 
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 4 }}>
-            Sign up
-          </Button>
+          <LoadingButton
+            loading={isRegistrationLoading}
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 4 }}
+          >
+            Registration
+          </LoadingButton>
 
           <div className="flex flex-col lg:flex-row justify-end mt-4">
             <Link to="/login" variant="body2" className="cursor-pointer">
